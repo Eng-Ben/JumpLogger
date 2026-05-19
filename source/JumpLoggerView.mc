@@ -10,7 +10,7 @@ class JumpLoggerView extends WatchUi.View {
     var accelZ = 0.0;
     var accelMag = 0.0;
 
-    var jumpThreshold = 15.0;
+    var jumpThreshold = 1400.0;
     var jumpDetected = false;
 
     function initialize() {
@@ -51,14 +51,40 @@ class JumpLoggerView extends WatchUi.View {
         }
     }
 
-    function onUpdate(dc as Dc) as Void {
+   function onUpdate(dc as Dc) as Void {
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
         dc.clear();
 
-        dc.drawText(dc.getWidth() / 2, 45, Graphics.FONT_MEDIUM, "Jump Logger", Graphics.TEXT_JUSTIFY_CENTER);
+        dc.drawText(
+            dc.getWidth() / 2,
+            45,
+            Graphics.FONT_MEDIUM,
+            "Jump Logger",
+            Graphics.TEXT_JUSTIFY_CENTER
+        );
 
-        dc.drawText(20, 105, Graphics.FONT_SMALL, "MAG: " + accelMag, Graphics.TEXT_JUSTIFY_LEFT);
-        dc.drawText(20, 150, Graphics.FONT_SMALL, "Limit: " + jumpThreshold, Graphics.TEXT_JUSTIFY_LEFT);
-        dc.drawText(20, 195, Graphics.FONT_SMALL, "Jump: " + jumpDetected, Graphics.TEXT_JUSTIFY_LEFT);
+        dc.drawText(
+            20,
+            110,
+            Graphics.FONT_SMALL,
+            "MAG: " + accelMag,
+            Graphics.TEXT_JUSTIFY_LEFT
+        );
+
+        dc.drawText(
+            20,
+            150,
+            Graphics.FONT_SMALL,
+            "LIMIT: " + jumpThreshold,
+            Graphics.TEXT_JUSTIFY_LEFT
+        );
+
+        dc.drawText(
+            20,
+            190,
+            Graphics.FONT_SMALL,
+            "JUMP: " + jumpDetected,
+            Graphics.TEXT_JUSTIFY_LEFT
+        );
     }
 }
