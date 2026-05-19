@@ -2,6 +2,7 @@ import Toybox.Graphics;
 import Toybox.WatchUi;
 import Toybox.Sensor;
 import Toybox.Math;
+import Toybox.System;
 
 class JumpLoggerView extends WatchUi.View {
 
@@ -10,8 +11,15 @@ class JumpLoggerView extends WatchUi.View {
     var accelZ = 0.0;
     var accelMag = 0.0;
 
-    var jumpThreshold = 1400.0;
+    var jumpThreshold = 1180.0;
+    var restThreshold = 1080.0;
+    var jumpCooldown = 1700;
+
     var jumpDetected = false;
+    var isArmed = true;
+    var lastJumpTime = 0;
+    var jumpCount = 0;
+    var maxMag = 0.0;
 
     function initialize() {
         View.initialize();
@@ -41,8 +49,18 @@ class JumpLoggerView extends WatchUi.View {
             var sum = (accelX * accelX) + (accelY * accelY) + (accelZ * accelZ);
             accelMag = Math.sqrt(sum);
 
-            if (accelMag > jumpThreshold) {
+            var currentTime = System.getTimer();
+
+            if (accelMag < restThreshold) {
+                isArmed = true;
+            }
+
+            if (isArmed && accelMag > jumpThreshold && (currentTime - lastJumpTime) > jumpCooldown) {
                 jumpDetected = true;
+                lastJumpTime = currentTime;
+                jumpCount += 1;
+                maxMag = accelMag;
+                isArmed = false;
             } else {
                 jumpDetected = false;
             }
@@ -51,25 +69,19 @@ class JumpLoggerView extends WatchUi.View {
         }
     }
 
-   function onUpdate(dc as Dc) as Void {
+    function onUpdate(dc as Dc) as Void {
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
         dc.clear();
 
-        dc.drawText(
-            dc.getWidth() / 2,
-            35,
-            Graphics.FONT_SMALL,
-            "Jump Logger",
-            Graphics.TEXT_JUSTIFY_CENTER
-        );
+        dc.drawText(dc.getWidth() / 2, 40, Graphics.FONT_SMALL, "Jump Logger", Graphics.TEXT_JUSTIFY_CENTER);
 
-        dc.drawText(30, 85, Graphics.FONT_TINY, "MAG:", Graphics.TEXT_JUSTIFY_LEFT);
-        dc.drawText(120, 85, Graphics.FONT_TINY, accelMag.format("%.0f"), Graphics.TEXT_JUSTIFY_LEFT);
+        dc.drawText(35, 95, Graphics.FONT_TINY, "MAG", Graphics.TEXT_JUSTIFY_LEFT);
+        dc.drawText(135, 95, Graphics.FONT_TINY, accelMag.format("%.0f"), Graphics.TEXT_JUSTIFY_LEFT);
 
-        dc.drawText(30, 125, Graphics.FONT_TINY, "LIMIT:", Graphics.TEXT_JUSTIFY_LEFT);
-        dc.drawText(120, 125, Graphics.FONT_TINY, jumpThreshold.format("%.0f"), Graphics.TEXT_JUSTIFY_LEFT);
+        dc.drawText(35, 145, Graphics.FONT_TINY, "JUMPS", Graphics.TEXT_JUSTIFY_LEFT);
+        dc.drawText(135, 145, Graphics.FONT_TINY, jumpCount.toString(), Graphics.TEXT_JUSTIFY_LEFT);
 
-        dc.drawText(30, 165, Graphics.FONT_TINY, "JUMP:", Graphics.TEXT_JUSTIFY_LEFT);
-        dc.drawText(120, 165, Graphics.FONT_TINY, jumpDetected ? "YES" : "NO", Graphics.TEXT_JUSTIFY_LEFT);
+        dc.drawText(35, 195, Graphics.FONT_TINY, "STATUS", Graphics.TEXT_JUSTIFY_LEFT);
+        dc.drawText(135, 195, Graphics.FONT_TINY, jumpDetected ? "YES" : "NO", Graphics.TEXT_JUSTIFY_LEFT);
     }
 }
