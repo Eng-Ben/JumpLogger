@@ -57,34 +57,19 @@ class JumpLoggerView extends WatchUi.View {
 
         dc.drawText(
             dc.getWidth() / 2,
-            45,
-            Graphics.FONT_MEDIUM,
+            35,
+            Graphics.FONT_SMALL,
             "Jump Logger",
             Graphics.TEXT_JUSTIFY_CENTER
         );
 
-        dc.drawText(
-            20,
-            110,
-            Graphics.FONT_SMALL,
-            "MAG: " + accelMag,
-            Graphics.TEXT_JUSTIFY_LEFT
-        );
+        dc.drawText(30, 85, Graphics.FONT_TINY, "MAG:", Graphics.TEXT_JUSTIFY_LEFT);
+        dc.drawText(120, 85, Graphics.FONT_TINY, accelMag.format("%.0f"), Graphics.TEXT_JUSTIFY_LEFT);
 
-        dc.drawText(
-            20,
-            150,
-            Graphics.FONT_SMALL,
-            "LIMIT: " + jumpThreshold,
-            Graphics.TEXT_JUSTIFY_LEFT
-        );
+        dc.drawText(30, 125, Graphics.FONT_TINY, "LIMIT:", Graphics.TEXT_JUSTIFY_LEFT);
+        dc.drawText(120, 125, Graphics.FONT_TINY, jumpThreshold.format("%.0f"), Graphics.TEXT_JUSTIFY_LEFT);
 
-        dc.drawText(
-            20,
-            190,
-            Graphics.FONT_SMALL,
-            "JUMP: " + jumpDetected,
-            Graphics.TEXT_JUSTIFY_LEFT
-        );
+        dc.drawText(30, 165, Graphics.FONT_TINY, "JUMP:", Graphics.TEXT_JUSTIFY_LEFT);
+        dc.drawText(120, 165, Graphics.FONT_TINY, jumpDetected ? "YES" : "NO", Graphics.TEXT_JUSTIFY_LEFT);
     }
 }
